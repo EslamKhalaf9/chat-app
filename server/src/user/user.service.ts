@@ -61,6 +61,9 @@ export default class UserService {
   }
 
   buildUserResponse(user: UserEntity): UserResponseInterface {
+    if (!user) {
+      return null;
+    }
     return {
       user: {
         ...user,
