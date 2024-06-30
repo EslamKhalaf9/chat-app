@@ -4,23 +4,41 @@ import { User } from "@/types/user.types";
 const users: User[] = [
   {
     id: "1", username: "User 1",
-    avatar: ""
+    image: ""
   },
   {
     id: "2", username: "User 2",
-    avatar: ""
+    image: ""
   },
   {
     id: "3", username: "User 3",
-    avatar: ""
+    image: ""
   },
   {
     id: "4", username: "User 4",
-    avatar: ""
+    image: ""
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+
+  const response = await fetch("http://localhost:5000/users", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJKYWNvYiIsImVtYWlsIjoiamFrZUBqYWtlLmpha2UiLCJpYXQiOjE3MTk2NjMxNDJ9.UHL6NwPUiiQBxf-Hguvdm3nIRXAE-mfno4B3gra3EAI",
+    },
+  });
+  if (!response.ok) {
+    return (
+      <div>something went wrong</div>
+    )
+  }
+
+  const users = await response.json() as User[];
+
+  console.log(users);
+
   return (
     <main className="mt-4">
       {/* user card */}

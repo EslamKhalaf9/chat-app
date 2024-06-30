@@ -16,7 +16,7 @@ type ChatProps = {
 
 function getInitials(name: string) {
   const [firstName, lastName] = name.split(' ');
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`;
+  return `${firstName?.charAt(0)}${lastName?lastName.charAt(0): ''}`;
 }
 
 export function Chat( { sender, receiver }: ChatProps ) {
@@ -26,7 +26,7 @@ export function Chat( { sender, receiver }: ChatProps ) {
         <div className="flex h-14 items-center justify-between border-b px-4 dark:border-gray-800">
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={receiver.avatar} />
+              <AvatarImage src={receiver.image} />
               <AvatarFallback>{getInitials(receiver.username)}</AvatarFallback>
             </Avatar>
             <div>
@@ -100,7 +100,7 @@ function ChatMessage(props: ChatMessageProps) {
   return (
     <div className="flex items-end gap-2">
       <Avatar>
-        <AvatarImage src={props.sender.avatar} />
+        <AvatarImage src={props.sender.image} />
         <AvatarFallback>{getInitials(props.sender.username)}</AvatarFallback>
       </Avatar>
       <div className="max-w-[70%] rounded-lg bg-gray-100 p-3 text-sm dark:bg-gray-800">
