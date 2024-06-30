@@ -1,5 +1,6 @@
 import { hash } from "bcrypt";
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import MessageEntity from "src/message/message.entity";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "users" })
 export default class UserEntity {
@@ -20,6 +21,12 @@ export default class UserEntity {
 
   @Column({ name: "password", select: false })
   password: string
+
+  @OneToMany(() => MessageEntity, (message) => message.from)
+  sentMessages: MessageEntity[]
+
+  @OneToMany(() => MessageEntity, (message) => message.to)
+  receivedMessages: MessageEntity[]
 
   @BeforeInsert()
   async hashPassword() {

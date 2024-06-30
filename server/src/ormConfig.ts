@@ -6,7 +6,7 @@ export const ormOptions: DataSourceOptions = {
   port: 5432,
   username: "postgres",
   password: "123456",
-  database: "mediumclone",
+  database: "chat-app",
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
 }
