@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import UserService from "./user.service";
 import CreateUserDto from "./dto/createUserDto";
 import { UserResponseInterface } from "./types/userResponse.interface";
@@ -13,6 +13,7 @@ export default class UserController {
   constructor(private readonly userService: UserService) { }
   
   @Get("users")
+  @UseGuards(AuthGuard)
   async findAll(): Promise<UserEntity[]> {
     return await this.userService.findAll();
   }
@@ -23,6 +24,12 @@ export default class UserController {
     @User() user: UserEntity
   ): Promise<UserResponseInterface> {
     return this.userService.buildUserResponse(user);
+  }
+
+  @Get("users/:id")
+  @UseGuards(AuthGuard)
+  async findById(@Param("id") id: number): Promise<UserEntity> {
+    return await this.userService.findById(id);
   }
 
   @Post("users")
