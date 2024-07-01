@@ -3,10 +3,7 @@ import CreateUserDto from "./dto/createUserDto";
 import { InjectRepository } from "@nestjs/typeorm";
 import UserEntity from "./user.entity";
 import { Repository } from "typeorm";
-import * as jwt from "jsonwebtoken";
 import { UserResponseInterface } from "./types/userResponse.interface";
-import LoginUserDto from "./dto/loginUserDto";
-import { compare } from "bcrypt";
 
 @Injectable()
 export default class UserService {
@@ -19,6 +16,14 @@ export default class UserService {
   
   async findById(id: number): Promise<UserEntity> {
     return await this.userRepository.findOne({ where: { id } })
+  }
+
+  async findByEmail(email: string): Promise<UserEntity> {
+    return await this.userRepository.findOne({ where: { email } })
+  }
+
+  async findByEmailWithPassword(email: string): Promise<UserEntity> {
+    return await this.userRepository.findOne({ where: { email }, select: ["id", "email", "username", "bio", "image", "password"] })
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -38,37 +43,14 @@ export default class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<UserResponseInterface> {
-    const existingUser = await this.userRepository.findOne({
-      where: { email: loginUserDto.email },
-      select: ["id", "email", "bio", "password", "username", "image"]
-    })
-
-    if (!existingUser || !await compare(loginUserDto.password, existingUser.password)) {
-      throw new HttpException("Invalid credentials", HttpStatus.UNAUTHORIZED);
-    } 
-
-    delete existingUser.password;
-    return this.buildUserResponse(existingUser);
-  }
-
-  private generateJwt(user: UserEntity): string {
-    return jwt.sign({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-    }, "secret");
-  }
-
   buildUserResponse(user: UserEntity): UserResponseInterface {
     if (!user) {
       return null;
     }
     return {
-      user: {
-        ...user,
-        token: this.generateJwt(user)
-      }
+        user: {
+          ...user,
+        }
     }
   }
 }

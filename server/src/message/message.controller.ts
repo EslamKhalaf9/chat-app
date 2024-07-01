@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards, UsePipes, ValidationPipe
 import { MessageService } from './message.service';
 import { User } from 'src/user/decorators/user.decorator';
 import CreateMessageDto from './dto/createMessageDto';
-import AuthGuard from 'src/user/guards/auth.gaurd';
+import AuthGuard from 'src/auth/guards/auth.gaurd';
 
 @Controller('message')
 export class MessageController {
