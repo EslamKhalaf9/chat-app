@@ -24,12 +24,32 @@ const formSchema = z.object({
 })
 
 
-type LoginFormProps = {
-  loginAction: (email: string, password: string) => Promise<{ success: boolean, error?: string }>;
-}
-
-const LoginForm = ({ loginAction }: LoginFormProps) => {
+const LoginForm = () => {
   const { toast } = useToast();
+
+  async function performLogin(email: string, password: string): Promise<{ success: boolean, error?: string }> {
+    const response = await fetch('https://localhost:5000/auth/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.message
+      }
+    }
+
+    return {
+      success: true
+    }
+  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,8 +60,7 @@ const LoginForm = ({ loginAction }: LoginFormProps) => {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { success } = await loginAction(values.email, values.password);
-    console.log("success", success);
+    const { success } = await performLogin(values.email, values.password);
 
     if (!success) {
       toast({

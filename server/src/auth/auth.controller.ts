@@ -15,13 +15,12 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async login(@Body() loginUserDto: LoginUserDto, @Res({ passthrough: true }) response: Response): Promise<any> {
     const loginRes = await this.authService.login(loginUserDto);
-
     response.cookie('access_token', loginRes.access_token, {
-      // domain: 'localhost:3000',
+      domain: 'localhost',
       httpOnly: true,
-      // path: '/',
-      secure: false,
-      sameSite: 'lax',
+      path: '/',
+      secure: true,
+      sameSite: 'none',
     });
     return loginRes;
   }
