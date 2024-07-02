@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { User } from 'src/user/decorators/user.decorator';
 import CreateMessageDto from './dto/createMessageDto';
@@ -15,10 +15,13 @@ export class MessageController {
     return await this.messageService.findMesssages(from, to, 1, 10);
   }
 
-  @Post("/:id")
+  @Post()
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  async createMessage(@Param("id") to: number, @User("id") from: number, @Body() createMessageDto: CreateMessageDto) {
-    return await this.messageService.createMessage({ ...createMessageDto, from, to });
+  async createMessage( @User("id") from: number, @Body() createMessageDto: CreateMessageDto) {
+    if (createMessageDto.from !== from) {
+      throw new HttpException("Invalid Input", HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return await this.messageService.createMessage(createMessageDto);
   }
 }
