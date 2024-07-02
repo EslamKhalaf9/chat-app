@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast";
+import { PasswordInput } from "../ui/password-input";
  
 const formSchema = z.object({
   email: z.string().trim().email().min(1),
@@ -80,11 +81,7 @@ const LoginForm = ({ loginAction }: LoginFormProps) => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  {...field}
-                />
+                <PasswordInput {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
